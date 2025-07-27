@@ -11,14 +11,14 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 
 // --- API Configuration ---
-// IMPORTANT: The original 'markerapi.com' URL still appears to be defunct based on initial tests.
-// While this code is now correctly structured according to the documentation, it will only work
-// if the API service at 'markerapi.com' is active.
 const API_USERNAME = 'dondakirme';
 const API_PASSWORD = 'yzBTM83FKn'; // Your API password
 
-// The base URL from the documentation.
-const BASE_URL = 'https://markerapi.com/api/v2/trademarks';
+// --- IMPORTANT ---
+// The main 'markerapi.com' URL is timing out.
+// Based on the PHP code example in the documentation, I am now trying the 'dev.markerapi.com' URL.
+// If this also fails, the API service is likely completely offline.
+const BASE_URL = 'https://dev.markerapi.com/api/v2/trademarks';
 
 // --- Helper function to make API requests ---
 async function makeApiRequest(url) {
@@ -30,6 +30,9 @@ async function makeApiRequest(url) {
                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
                 'Accept': 'application/json',
             },
+            // The 'dev' server might have SSL certificate issues, this can help bypass them for testing.
+            // In a real production app, you'd want to ensure the certificate is valid.
+            httpsAgent: new (require('https').Agent)({ rejectUnauthorized: false }),
             validateStatus: (status) => status < 500, // Handle 4xx errors gracefully
         });
 
