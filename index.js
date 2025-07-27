@@ -592,10 +592,13 @@ app.use((error, req, res, next) => {
 });
 
 // Start server
-app.listen(port, () => {
-    console.log(`Trademark API tester running at http://localhost:${port}`);
-    console.log(`Make sure to update API_USERNAME with your actual username!`);
-    console.log(`Current API_PASSWORD: ${API_PASSWORD}`);
-});
+if (process.env.NODE_ENV !== 'production') {
+    app.listen(port, () => {
+        console.log(`Trademark API tester running at http://localhost:${port}`);
+        console.log(`API Username: ${API_USERNAME}`);
+        console.log(`Current API_PASSWORD: ${API_PASSWORD}`);
+    });
+}
 
+// Export for Vercel
 module.exports = app;
